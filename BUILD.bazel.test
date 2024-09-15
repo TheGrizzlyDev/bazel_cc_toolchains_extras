@@ -1,0 +1,25 @@
+load("//platforms:multi_platform.bzl", "multi_platform_cc_binary", "multi_platform_cc_test")
+
+cc_library(
+    name = "lib",
+    srcs = ["lib.cc"],
+    hdrs = ["lib.hh"],
+)
+
+multi_platform_cc_test(
+    name = "lib_test.exe",
+    srcs = glob(["*_test.cc"]),
+    deps = [
+        ":lib",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
+)
+
+multi_platform_cc_binary(
+    name = "hello_worlder",
+    srcs = ["main.cc"],
+    deps = [
+        ":lib",
+    ],
+)

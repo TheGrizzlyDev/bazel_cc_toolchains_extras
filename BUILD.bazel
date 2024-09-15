@@ -1,0 +1,47 @@
+load(":cc_test_toolchain.bzl", "cc_test_toolchain")
+
+sh_binary(
+    name = "test_wrapper",
+    srcs = ["test_wrapper.sh"],
+)
+
+cc_test_toolchain(
+    name = "simple_wrapper_cc_test_toolchain",
+    wrapper = ":test_wrapper",
+)
+
+toolchain(
+    name = "simple_wrapper_toolchain",
+    exec_compatible_with = [
+        "@platforms//os:linux",
+    ],
+    target_compatible_with = [
+        "@platforms//os:linux",
+    ],
+    toolchain = ":simple_wrapper_cc_test_toolchain",
+    toolchain_type = "@bazel_tools//tools/cpp:test_runner_toolchain_type",
+)
+
+cc_library(
+    name = "lib",
+    srcs = ["lib.cc"],
+    hdrs = ["lib.hh"],
+)
+
+cc_test(
+    name = "lib_test.exe",
+    srcs = glob(["*_test.cc"]),
+    deps = [
+        ":lib",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
+)
+
+cc_binary(
+    name = "hello_worlder",
+    srcs = ["main.cc"],
+    deps = [
+        ":lib",
+    ],
+)
